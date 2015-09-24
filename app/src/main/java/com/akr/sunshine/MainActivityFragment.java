@@ -1,5 +1,6 @@
 package com.akr.sunshine;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -70,7 +71,7 @@ public class MainActivityFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main, container, false);
 
-        ArrayList<String> strings1 = new ArrayList<String>();
+        final ArrayList<String> strings1 = new ArrayList<String>();
         strings1.add("today - sunny - 88/63");
         strings1.add("tomorrow - cloudy - 74/65");
         strings1.add("monday - rainy - 78/65");
@@ -92,6 +93,10 @@ public class MainActivityFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Toast.makeText(getActivity(),adapter.getItem(position),Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent();
+                intent.putExtra("String", adapter.getItem(position));
+                intent.setClass(getActivity(),DetailActivity.class);
+                startActivity(intent);
             }
         });
 
