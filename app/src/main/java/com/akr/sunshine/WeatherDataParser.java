@@ -130,4 +130,13 @@ public class WeatherDataParser {
 
     }
 
+
+
+    public static double celsiusToFahrenheit (double celsius) {
+         return  (9.0 / 5) * celsius + 32;
+    }
+
+    public static double fahrenheitToCelsius (double Fahrenheit) {
+        return (Fahrenheit - 32) * (5 / 9.0);
+    }
 }

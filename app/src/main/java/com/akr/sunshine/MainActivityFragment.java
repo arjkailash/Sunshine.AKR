@@ -28,6 +28,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -96,6 +97,7 @@ public class MainActivityFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Toast.makeText(getActivity(),adapter.getItem(position),Toast.LENGTH_SHORT).show();
+
                 Intent intent = new Intent();
                 intent.putExtra("String", adapter.getItem(position));
                 intent.setClass(getActivity(),DetailActivity.class);
@@ -204,6 +206,33 @@ public class MainActivityFragment extends Fragment {
         protected void onPostExecute(String[] strings) {
             if (strings != null) {
                 adapter.clear();
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                String units = prefs.getString(getString(R.string.pref_temperature_key),getString(R.string.default_temp));
+                if ( units.equalsIgnoreCase(getString(R.string.imperial))){
+
+                    for (int i=0;i<strings.length;i++) {
+                        String[] delim = strings[i].split("-");
+                        String[] maxmin = delim[2].split("/");
+                        //Log.v(LOG_TAG,maxmin[0] + "/" + maxmin[1]);
+                        maxmin[0] = Double.toString(WeatherDataParser.celsiusToFahrenheit(Double.parseDouble(maxmin[0])));
+                        if (maxmin.length>1) {
+                            maxmin[1] = Double.toString(WeatherDataParser.celsiusToFahrenheit(Double.parseDouble(maxmin[1])));
+                        }
+                        else
+                        {
+                            maxmin[0] = maxmin[0] +"/";
+                            delim[3] = Double.toString(WeatherDataParser.celsiusToFahrenheit(Double.parseDouble(delim[3])));
+                        }
+                        delim[2] = Arrays.toString(maxmin).replace(", ", "/").replaceAll("[\\[\\]]", "");
+                        if (maxmin.length>1) {
+                            strings[i] = delim[0]+"-"+delim[1]+"-"+delim[2];
+                        }
+                        else
+                        {
+                            strings[i] = delim[0]+"-"+delim[1]+"-"+delim[2]+delim[3];
+                        }
+                    }
+                }
                 adapter.addAll(strings);
             }
         }
