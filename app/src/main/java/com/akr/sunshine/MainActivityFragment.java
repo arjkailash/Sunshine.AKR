@@ -72,6 +72,16 @@ public class MainActivityFragment extends Fragment {
             return true;
         }
 
+        if (id == R.id.view_in_map) {
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            String location = prefs.getString(getString(R.string.pref_location_key), getString(R.string.default_value));
+            Intent intent = new Intent(Intent.ACTION_VIEW,Uri.parse("geo:0,0?q="+location));
+            if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
+                startActivity(intent);
+            }
+            return true;
+        }
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -99,8 +109,8 @@ public class MainActivityFragment extends Fragment {
                 Toast.makeText(getActivity(),adapter.getItem(position),Toast.LENGTH_SHORT).show();
 
                 Intent intent = new Intent();
-                intent.putExtra("String", adapter.getItem(position));
-                intent.setClass(getActivity(),DetailActivity.class);
+                intent.putExtra(DetailActivityFragment.FORECAST, adapter.getItem(position));
+                intent.setClass(getActivity(), DetailActivity.class);
                 startActivity(intent);
             }
         });
@@ -194,7 +204,8 @@ public class MainActivityFragment extends Fragment {
                 return WeatherDataParser.getWeatherDataFromJson(forecastJsonStr, numDays);
             }
             catch (JSONException e){
-                Log.e(LOG_TAG,e.getMessage(),e);
+                Log.e(LOG_TAG, e.getMessage(), e);
+                e.printStackTrace();
                 e.printStackTrace();
                 return null;
             }
